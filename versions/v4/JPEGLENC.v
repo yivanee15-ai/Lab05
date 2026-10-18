@@ -766,9 +766,17 @@ assign mask1[61] = bigf1[7];
 assign mask1[62] = bigf1[6];
 assign mask1[63] = bigf1[7];
 
-wire [63:0] oh     = mask_rem & (~mask_rem + 64'd1);   // lowest remaining position (one-hot)
-wire [63:0] rem_nx = mask_rem & ~oh;
-wire        last_nx = (rem_nx == 64'd0);
+// parallel-prefix OR: pre[i] = |mask_rem[i:0]
+wire [63:0] pre1 = mask_rem | (mask_rem << 1);
+wire [63:0] pre2 = pre1 | (pre1 << 2);
+wire [63:0] pre3 = pre2 | (pre2 << 4);
+wire [63:0] pre4 = pre3 | (pre3 << 8);
+wire [63:0] pre5 = pre4 | (pre4 << 16);
+wire [63:0] pre6 = pre5 | (pre5 << 32);
+wire [63:0] below  = pre6 << 1;                  // below[i] = some lower position is still set
+wire [63:0] oh     = mask_rem & ~below;          // lowest remaining position (one-hot)
+wire [63:0] rem_nx = mask_rem & below;
+wire        last_nx = ~|rem_nx;
 reg  [5:0]  idx_nx;
 integer     ii;
 always @(*) begin

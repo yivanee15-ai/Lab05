@@ -1,0 +1,8 @@
+strash
+balance
+&get -n
+&dch -f
+&nf -D {D}
+&put
+topo
+stime -p
