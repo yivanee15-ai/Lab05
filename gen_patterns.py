@@ -131,8 +131,36 @@ def randoms(n, rng):
     return out
 
 
+def stress(rng):
+    """Images that stress the zero-column skip rule, ZRL generation and the pipeline lag."""
+    out = []
+    # uniform noise of growing amplitude: many columns flagged while few coefficients are non-zero
+    for A in (1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 48, 64, 96):
+        out.append(("noise_%d" % A, [clamp(128 + rng.randint(-A, A)) for _ in range(16384)]))
+    # blocks made of 1..4 random DCT basis functions (long zero runs, ZRL)
+    for k in range(8):
+        blocks = []
+        for b in range(256):
+            comps = []
+            for _ in range(rng.randint(1, 4)):
+                comps.append((rng.randrange(8), rng.randrange(8), rng.choice((-1, 1)) * rng.choice((8, 16, 24, 40, 64, 90))))
+            blocks.append(comps)
+        def f(x, y, blocks=blocks):
+            comps = blocks[blk(x, y)]
+            v = 128.0
+            for (u, w, a) in comps:
+                v += COSINE[u * 8 + (x & 7)] * COSINE[w * 8 + (y & 7)] * a / 65536.0
+            return v
+        out.append(("sparse_basis_%d" % k, make(f)))
+    # smooth ramps plus small noise (typical natural-image-like content)
+    for k in range(6):
+        sx, sy, nz = rng.uniform(-1.2, 1.2), rng.uniform(-1.2, 1.2), rng.choice((0, 1, 2, 3, 5))
+        out.append(("ramp_noise_%d" % k, make(lambda x, y, sx=sx, sy=sy, nz=nz: 128 + sx * (x - 64) + sy * (y - 64) + rng.randint(-nz, nz))))
+    return out
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--stress", action="store_true", help="append the stress set (noise sweep, sparse bases, ramps)")
     ap.add_argument("--random", type=int, default=24)
     ap.add_argument("--seed", type=int, default=2026)
     ap.add_argument("--out", default="out")
@@ -143,6 +171,10 @@ def main():
     for n, im in smooth() + randoms(a.random, rng):
         names.append(n)
         imgs.append(im)
+    if a.stress:
+        for n, im in stress(rng):
+            names.append(n)
+            imgs.append(im)
 
     os.makedirs(a.out, exist_ok=True)
     goldens = [encode_image(im) for im in imgs]
