@@ -926,7 +926,13 @@ module JPEGLENC_sbuf(
         input  [7:0]  di,
         output [7:0]  dout
         );
-    SBUF_1024X8 u_mem (.Q(dout), .CLK(clk), .CEN(~cs), .WEN(web), .A(addr), .D(di), .OEN(1'b0));
+    SBUF_1024X8 u_mem (
+        .A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), .A5(addr[5]),
+        .A6(addr[6]), .A7(addr[7]), .A8(addr[8]), .A9(addr[9]), .DO0(dout[0]), .DO1(dout[1]),
+        .DO2(dout[2]), .DO3(dout[3]), .DO4(dout[4]), .DO5(dout[5]), .DO6(dout[6]), .DO7(dout[7]),
+        .DI0(di[0]), .DI1(di[1]), .DI2(di[2]), .DI3(di[3]), .DI4(di[4]), .DI5(di[5]), .DI6(di[6]),
+        .DI7(di[7]), .CK(clk), .WEB(web), .OE(1'b1), .CS(cs)
+    );
 endmodule
 
 module JPEGLENC_obuf(
@@ -937,5 +943,20 @@ module JPEGLENC_obuf(
         input  [31:0] di,
         output [31:0] dout
         );
-    OBUF_4096X32 u_mem (.Q(dout), .CLK(clk), .CEN(~cs), .WEN(web), .A(addr), .D(di), .OEN(1'b0));
+    OBUF_4096X32 u_mem (
+        .A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), .A5(addr[5]),
+        .A6(addr[6]), .A7(addr[7]), .A8(addr[8]), .A9(addr[9]), .A10(addr[10]), .A11(addr[11]),
+        .DO0(dout[0]), .DO1(dout[1]), .DO2(dout[2]), .DO3(dout[3]), .DO4(dout[4]), .DO5(dout[5]),
+        .DO6(dout[6]), .DO7(dout[7]), .DO8(dout[8]), .DO9(dout[9]), .DO10(dout[10]), .DO11(dout[11]),
+        .DO12(dout[12]), .DO13(dout[13]), .DO14(dout[14]), .DO15(dout[15]), .DO16(dout[16]),
+        .DO17(dout[17]), .DO18(dout[18]), .DO19(dout[19]), .DO20(dout[20]), .DO21(dout[21]),
+        .DO22(dout[22]), .DO23(dout[23]), .DO24(dout[24]), .DO25(dout[25]), .DO26(dout[26]),
+        .DO27(dout[27]), .DO28(dout[28]), .DO29(dout[29]), .DO30(dout[30]), .DO31(dout[31]),
+        .DI0(di[0]), .DI1(di[1]), .DI2(di[2]), .DI3(di[3]), .DI4(di[4]), .DI5(di[5]), .DI6(di[6]),
+        .DI7(di[7]), .DI8(di[8]), .DI9(di[9]), .DI10(di[10]), .DI11(di[11]), .DI12(di[12]),
+        .DI13(di[13]), .DI14(di[14]), .DI15(di[15]), .DI16(di[16]), .DI17(di[17]), .DI18(di[18]),
+        .DI19(di[19]), .DI20(di[20]), .DI21(di[21]), .DI22(di[22]), .DI23(di[23]), .DI24(di[24]),
+        .DI25(di[25]), .DI26(di[26]), .DI27(di[27]), .DI28(di[28]), .DI29(di[29]), .DI30(di[30]),
+        .DI31(di[31]), .CK(clk), .WEB(web), .OE(1'b1), .CS(cs)
+    );
 endmodule
