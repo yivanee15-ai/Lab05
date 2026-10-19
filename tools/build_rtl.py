@@ -11,6 +11,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 CONFIG = {
     'v2': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_4096X32', 4096, 12, 32)),
     'v3': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
+    'v7': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v6': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v5': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v4': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
