@@ -11,6 +11,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 CONFIG = {
     'v2': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_4096X32', 4096, 12, 32)),
     'v3': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
+    'v6': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v5': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v4': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
 }
@@ -29,6 +30,10 @@ def rom_dc():
 
 def rom_ac():
     return '\n'.join("            8'h%02X: acrom = 21'h%05X;" % (k, (v[0] << 16) | v[1]) for k, v in sorted(AC_LUT.items()))
+
+def rom_vus():
+    terms = ["    ({9{oh[%d]}} & 9'd%d)" % (i, ZIGZAG_ADDR[i] * 8 + QUANT_SHIFT[ZIGZAG_ADDR[i]]) for i in range(64)]
+    return ' |\n'.join(terms) + ';'
 
 def mask_lines():
     return '\n'.join("assign mask[%d] = bsel[%d];" % (i, ZIGZAG_ADDR[i] & 7) for i in range(1, 64))
@@ -73,7 +78,7 @@ def main():
     t = open(os.path.join(ROOT, 'tools', ver + '.v.in')).read()
     sb, ob = cfg['sbuf'], cfg['obuf']
     rep = {
-        '@@CM4@@': rom_cm4(), '@@ZZS@@': rom_zzs(), '@@DCROM@@': rom_dc(), '@@ACROM@@': rom_ac(),
+        '@@CM4@@': rom_cm4(), '@@VUS@@': rom_vus(), '@@ZZS@@': rom_zzs(), '@@DCROM@@': rom_dc(), '@@ACROM@@': rom_ac(),
         '@@MASK@@': mask_lines(), '@@MASK0@@': mask_lines_n(0), '@@MASK1@@': mask_lines_n(1),
         '@@SBUF_INST@@': inst(sb[0], sb[2], sb[3]), '@@OBUF_INST@@': inst(ob[0], ob[2], ob[3]),
         '@@OB_AMSB@@': str(ob[2] - 1), '@@SB_AMSB@@': str(sb[2] - 1),
