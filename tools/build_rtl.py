@@ -11,6 +11,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 CONFIG = {
     'v2': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_4096X32', 4096, 12, 32)),
     'v3': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
+    'v5': dict(sbuf=('SBUF_512X32', 512, 9, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
     'v4': dict(sbuf=('SBUF_256X32', 256, 8, 32), obuf=('OBUF_3072X32', 3072, 12, 32)),
 }
 
@@ -75,7 +76,7 @@ def main():
         '@@CM4@@': rom_cm4(), '@@ZZS@@': rom_zzs(), '@@DCROM@@': rom_dc(), '@@ACROM@@': rom_ac(),
         '@@MASK@@': mask_lines(), '@@MASK0@@': mask_lines_n(0), '@@MASK1@@': mask_lines_n(1),
         '@@SBUF_INST@@': inst(sb[0], sb[2], sb[3]), '@@OBUF_INST@@': inst(ob[0], ob[2], ob[3]),
-        '@@OB_AMSB@@': str(ob[2] - 1),
+        '@@OB_AMSB@@': str(ob[2] - 1), '@@SB_AMSB@@': str(sb[2] - 1),
     }
     for k, v in rep.items():
         t = t.replace(k, v)
