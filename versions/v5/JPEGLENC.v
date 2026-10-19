@@ -12,12 +12,13 @@
 //
 //   File Name   : JPEGLENC.v
 //   Module Name : JPEGLENC
-//   Release version : V4.0 (Release Date: 2026-09)
+//   Release version : V5.0 (Release Date: 2026-10)
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //############################################################################
 //
-// V4: V3 re-pipelined for a short clock period.
+// V5: V4 (short-clock pipeline) with the two stripe buffers merged into one 512 x 32 macro.
+//     Input writes have priority over stage-1 reads on the single port.
 //
 //   inputs / SRAM outputs are registered, every arithmetic block is cut so that
 //   no stage holds more than one adder-tree + one carry-propagate adder:
